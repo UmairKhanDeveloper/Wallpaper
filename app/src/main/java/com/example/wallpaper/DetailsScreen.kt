@@ -1,6 +1,14 @@
 package com.example.wallpaper
 
 import android.annotation.SuppressLint
+import android.app.WallpaperManager
+import android.content.ContentValues
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,11 +47,6 @@ import com.example.wallpaper.api.MainViewModel
 import com.example.wallpaper.api.Reprository
 import com.example.wallpaper.db.Favorite
 import com.example.wallpaper.db.FavoriteDataBase
-
-import android.app.WallpaperManager
-import android.graphics.BitmapFactory
-import android.widget.Toast
-import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,6 +63,12 @@ fun DetailsScreen(navController: NavHostController, image: String?) {
     val viewModel = remember { MainViewModel(reprository) }
     val wallpaperdata by viewModel.allWallpaperS.observeAsState()
     var isFavorited by remember { mutableStateOf(false) }
+
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, "$image")
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
 
     Column(
         modifier = Modifier
@@ -89,12 +99,6 @@ fun DetailsScreen(navController: NavHostController, image: String?) {
                     modifier = Modifier
                         .size(32.dp)
                         .clickable { navController.navigate(Screens.HomeScreen.route) })
-                Icon(imageVector = Icons.Default.Info,
-                    contentDescription = "",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable { })
 
             }
 
@@ -143,40 +147,130 @@ fun DetailsScreen(navController: NavHostController, image: String?) {
                                 try {
                                     withContext(Dispatchers.IO) {
                                         val url = URL(image)
-                                        val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                                        val bitmap = BitmapFactory.decodeStream(
+                                            url
+                                                .openConnection()
+                                                .getInputStream()
+                                        )
                                         val wallpaperManager = WallpaperManager.getInstance(context)
                                         wallpaperManager.setBitmap(bitmap)
                                     }
-                                    Toast.makeText(context, "Wallpaper Set Successfully", Toast.LENGTH_SHORT).show()
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Wallpaper Set Successfully",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
                                 } catch (e: Exception) {
                                     e.printStackTrace()
-                                    Toast.makeText(context, "Failed to Set Wallpaper", Toast.LENGTH_SHORT).show()
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Failed to Set Wallpaper",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
                                 }
                             }
                         }
                 )
+
                 Icon(
                     imageVector = Icons.Default.Download,
                     contentDescription = "Download",
                     tint = Color.White,
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable { }
+                        .clickable {
+                            scope.launch {
+                                try {
+                                    withContext(Dispatchers.IO) {
+                                        val url = URL(image)
+                                        val bitmap = BitmapFactory.decodeStream(
+                                            url
+                                                .openConnection()
+                                                .getInputStream()
+                                        )
+
+                                        val filename = "wallpaper_${System.currentTimeMillis()}.jpg"
+
+                                        val resolver = context.contentResolver
+                                        val contentValues = ContentValues().apply {
+                                            put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+                                            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                                            put(
+                                                MediaStore.Images.Media.RELATIVE_PATH,
+                                                Environment.DIRECTORY_PICTURES + "/Wallpapers"
+                                            )
+                                        }
+
+                                        val imageUri = resolver.insert(
+                                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                            contentValues
+                                        )
+                                        if (imageUri != null) {
+                                            resolver
+                                                .openOutputStream(imageUri)
+                                                .use { outputStream ->
+                                                    if (outputStream != null) {
+                                                        bitmap.compress(
+                                                            Bitmap.CompressFormat.JPEG,
+                                                            100,
+                                                            outputStream
+                                                        )
+                                                    }
+                                                }
+                                        }
+
+                                        withContext(Dispatchers.Main) {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Image downloaded successfully!",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    withContext(Dispatchers.Main) {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "Failed to download image",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+                                    }
+                                }
+                            }
+                        }
                 )
+
+
                 Icon(
                     imageVector = Icons.Default.Share,
                     contentDescription = "Share",
                     tint = Color.White,
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable { }
+                        .clickable {
+                            context.startActivity(shareIntent)
+                        }
                 )
+
+
             }
 
         }
     }
 
 }
+
+
+
 
 
 

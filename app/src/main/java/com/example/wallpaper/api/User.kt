@@ -1,5 +1,8 @@
-package com.example.wallpaper
+package com.example.wallpaper.api
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User(
     val id: Int,
     val name: String,

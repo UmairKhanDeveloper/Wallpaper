@@ -13,6 +13,10 @@ class Reprository(private val favoriteDataBase: FavoriteDataBase) :Wallpaper{
         return WallpaperclientApi.searchWallPaper(query)
     }
 
+    override suspend fun videowallpaper(): videoswallpaper {
+        return WallpaperclientApi.videosWallpaer()
+    }
+
     fun getFavData(): LiveData<List<Favorite>> {
         return favoriteDataBase.getDao().getAllNotes()
     }

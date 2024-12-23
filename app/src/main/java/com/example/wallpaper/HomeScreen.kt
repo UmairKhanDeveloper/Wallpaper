@@ -100,16 +100,6 @@ fun HomeScreen(navController: NavHostController) {
                         style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 20.sp)
                     )
                 },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = "Home Icon",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(30.dp)
-                    )
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     Color(0XFF191E31)
                 ),

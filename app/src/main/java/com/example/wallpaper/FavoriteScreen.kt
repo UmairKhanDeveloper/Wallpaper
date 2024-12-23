@@ -135,15 +135,7 @@ fun FavoriteItem(favorite: Favorite, viewModel: MainViewModel,navController: Nav
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.fillMaxHeight()
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favorite Icon",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(4.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
+
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Icon",

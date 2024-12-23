@@ -1,5 +1,8 @@
-package com.example.wallpaper
+package com.example.wallpaper.api
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class VideoFile(
     val file_type: String,
     val fps: Double,

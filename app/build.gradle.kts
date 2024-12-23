@@ -67,7 +67,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.compose.material:material-icons-extended:1.6.3")
-    // Room
     val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
@@ -80,4 +79,12 @@ dependencies {
     implementation("io.insert-koin:koin-compose")
     implementation("io.insert-koin:koin-annotations:1.3.1")
     implementation ("androidx.compose.runtime:runtime-livedata")
+    implementation("io.sanghun:compose-video:1.2.0")
+    implementation("androidx.media3:media3-exoplayer:1.1.0") // [Required] androidx.media3 ExoPlayer dependency
+    implementation("androidx.media3:media3-session:1.1.0") // [Required] MediaSession Extension dependency
+    implementation("androidx.media3:media3-ui:1.1.0") // [Required] Base Player UI
+
+    implementation("androidx.media3:media3-exoplayer-dash:1.1.0") // [Optional] If your media item is DASH
+    implementation("androidx.media3:media3-exoplayer-hls:1.1.0") // [Optional] If your media item is HLS (m3u8..)
+
 }

@@ -17,6 +17,11 @@ class MainViewModel(private val reprository: Reprository) : ViewModel() {
     private val _SearchWallpaper = MutableStateFlow<ResultState<HomeWallpaper>>(ResultState.Loading)
     val SearchWallpaper: StateFlow<ResultState<HomeWallpaper>> = _SearchWallpaper.asStateFlow()
 
+    private val _videosWallpaper =
+        MutableStateFlow<ResultState<videoswallpaper>>(ResultState.Loading)
+    val videosWallpaper: StateFlow<ResultState<videoswallpaper>> = _videosWallpaper.asStateFlow()
+
+
     val allWallpaperS: LiveData<List<Favorite>> = reprository.getFavData()
 
 
@@ -62,6 +67,20 @@ class MainViewModel(private val reprository: Reprository) : ViewModel() {
                 _SearchWallpaper.emit(ResultState.Succses(response))
             } catch (e: Exception) {
                 _SearchWallpaper.emit(ResultState.Error(e))
+            }
+        }
+    }
+
+    fun videoswallpaper() {
+        viewModelScope.launch {
+            _videosWallpaper.value = ResultState.Loading
+            try {
+                val response = reprository.videowallpaper()
+                _videosWallpaper.value = ResultState.Succses(response)
+
+            } catch (e: Exception) {
+                _videosWallpaper.value = ResultState.Error(e)
+
             }
         }
     }

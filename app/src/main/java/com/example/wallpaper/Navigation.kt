@@ -7,10 +7,12 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -52,6 +54,7 @@ fun Navigation(navController: NavHostController) {
         composable(Screens.TermsConditionScreen.route){
             TermsConditionScreen(navController)
         }
+
         composable(
             Screens.DetailsScreen.route + "/{src}",
             arguments = listOf(
@@ -126,6 +129,18 @@ sealed class Screens(
         "DetailsScreen",
         selectedIcon = Icons.Filled.Settings,
         unselectedIcon = Icons.Outlined.Settings
+    )
+    object VideoswallpaperScreen : Screens(
+        "VideoswallpaperScreen",
+        "VideoswallpaperScreen",
+        selectedIcon = Icons.Filled.Wallpaper,
+        unselectedIcon = Icons.Outlined.Wallpaper
+    )
+    object VideoWallpaperDetails: Screens(
+        "VideoWallpaperDetails",
+        "VideoWallpaperDetails",
+        selectedIcon = Icons.Filled.Wallpaper,
+        unselectedIcon = Icons.Outlined.Wallpaper
     )
 
 

@@ -64,5 +64,7 @@ object WallpaperclientApi {
     suspend fun searchWallPaper(query: String):HomeWallpaper{
         return client.get(BASE_URL + "v1/search?query=$query&per_page=100").body()
     }
-
+    suspend fun  videosWallpaer(): videoswallpaper {
+        return client.get("https://api.pexels.com/videos/search?query=nature&per_page=100").body()
+    }
 }
